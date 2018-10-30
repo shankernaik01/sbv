@@ -1,0 +1,85 @@
+#!/bin/bash
+
+
+#system preparation
+
+echo "creating ipaddress"
+
+
+echo '
+ONBOOT="yes" /
+IPADDR="192.168.100.61" /
+PREFIX="24" /
+GATEWAY="192.168.100.1" /
+DNS1="192.168.100.100" /
+DNS2="192.168.100.1" /
+IPV6_PRIVACY="no"' >> /etc/sysconfig/network-scripts/ifcfg-ens192
+
+
+echo "creating hostname"
+
+
+echo "updating yum"
+
+yum update -y
+
+echo "installing wget"
+
+yum install wget -y
+
+echo " installing nano"
+
+yum install nano -y
+
+echo "installing java
+
+
+yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+
+echo "append java path in bashrc"
+
+echo 'export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-8.b10.el7_5.x86_64/jre/
+export PATH=$PATH:$JAVA_HOME/bin' >>.bashrc
+
+Alternarives --config java
+
+echo "disabling selinux"
+
+sed -i '/SELINUX=enforcing/d'/etc/sysconfig/selinux
+
+echo 'SELINUX=disabled' >> /etc/sysconfig/selinux
+
+setenforce 0
+
+echo "disable and stop the firewall"
+
+systemctl disable firewalld
+
+systemctl stop firewalld
+
+echo "installing ntp"
+
+yum install ntp ntpdate ntp-doc -y
+
+echo "start ntpd service"
+
+service ntpd start
+
+sestatus
+
+echo "installing ssh"
+
+yum install ssh
+
+echo "generating ssh key"
+
+ssh-keygen -t rsa -y
+
+echo "copying generated public-key to authorized-keys"
+
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.100.120
+
+chmod 0600 ~/.ssh/authorized_keys
+
+reboot
+
