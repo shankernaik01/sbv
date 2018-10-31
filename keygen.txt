@@ -2,7 +2,7 @@
 
 
 #system preparation
-
+echo "hai shanker how are you what about jenkins"
 echo "creating ipaddress"
 
 
